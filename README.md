@@ -27,7 +27,7 @@ you need to create `.feature` file first using gherkin syntex
 * Install cli apps
 
 ```bash
- go install github.com/dionaditya/curl-to-k6@v0.1.1
+ go install github.com/dionaditya/curl-to-k6@v0.1.2
 ```
 
 ### Executing program
