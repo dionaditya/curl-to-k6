@@ -11,14 +11,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var sourceDir string
+
+var outDir string
+
 // rootCmd represents the base command when called without any subcommands
-var initCommand = &cobra.Command{
-	Use:   "init",
+var generateCommand = &cobra.Command{
+	Use:   "generate",
 	Short: "Generator to create k6 script from curl command",
 	Long:  `ClI apps to generate k6 script from curl command using gherkin syntax`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.Run(args[0])
+		internal.Run(sourceDir, outDir)
 	},
 }
 
@@ -26,9 +30,9 @@ var initCommand = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 
-	var rootCmd = &cobra.Command{Use: "app"}
+	var rootCmd = &cobra.Command{Use: "curl-to-k6"}
 
-	rootCmd.AddCommand(initCommand)
+	rootCmd.AddCommand(generateCommand)
 
 	err := rootCmd.Execute()
 	if err != nil {
@@ -45,4 +49,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
+
+	generateCommand.PersistentFlags().StringVarP(&sourceDir, "source", "s", "", "source directory")
+	generateCommand.PersistentFlags().StringVarP(&outDir, "output", "o", "", "output directory")
 }

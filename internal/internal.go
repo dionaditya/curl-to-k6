@@ -18,10 +18,11 @@ import (
 	gherkin "github.com/cucumber/gherkin/go"
 )
 
-func generatek6Code(fileName string, directoryName string) {
+func generatek6Code(fileName string, directoryName string, outDir string) {
 	content, err := ioutil.ReadFile(directoryName + "/" + fileName)
 
 	if err != nil {
+		fmt.Println("test")
 		fmt.Println(err)
 	}
 
@@ -50,7 +51,12 @@ func generatek6Code(fileName string, directoryName string) {
 
 		stringFile := templates.GenerateStarterCode(request.Url, strings.ToLower(request.Method), k6Script, helpers.GetBody(request.Body), string(headers), helpers.ProduceFormData(request.Files))
 
-		f, err := os.Create(directoryName + "/" + fileOutput)
+		if _, err := os.Stat(outDir); os.IsNotExist(err) {
+			err = os.Mkdir(outDir, 0755)
+			// TODO: handle error
+		}
+
+		f, err := os.Create(outDir + "/" + fileOutput)
 
 		if err != nil {
 			fmt.Println(err)
@@ -70,7 +76,7 @@ func generatek6Code(fileName string, directoryName string) {
 			return
 		}
 
-		cmd := exec.Command("prettier", "--write", directoryName)
+		cmd := exec.Command("prettier", "--write", outDir)
 		_, err = cmd.Output()
 
 		if err != nil {
@@ -81,9 +87,9 @@ func generatek6Code(fileName string, directoryName string) {
 	}
 }
 
-func Run(directoryName string) {
+func Run(sourceDir string, outDir string) {
 
-	files, err := ioutil.ReadDir(directoryName)
+	files, err := ioutil.ReadDir(sourceDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +99,9 @@ func Run(directoryName string) {
 			continue
 		}
 
-		generatek6Code(file.Name(), directoryName)
+		fmt.Println(file.Name())
+
+		generatek6Code(file.Name(), sourceDir, outDir)
 
 	}
 
