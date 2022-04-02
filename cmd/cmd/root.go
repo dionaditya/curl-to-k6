@@ -7,7 +7,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/curl-to-k6/internal"
+	"github.com/dionaditya/curl-to-k6/internal"
 	"github.com/spf13/cobra"
 )
 

@@ -10,10 +10,10 @@ import (
 	"regexp"
 	"strings"
 
-	curlParser "github.com/curl-to-k6/curl_parser"
-	"github.com/curl-to-k6/templates"
+	curlParser "github.com/dionaditya/curl-to-k6/curl_parser"
+	"github.com/dionaditya/curl-to-k6/templates"
 
-	helpers "github.com/curl-to-k6/helpers"
+	helpers "github.com/dionaditya/curl-to-k6/helpers"
 
 	gherkin "github.com/cucumber/gherkin/go"
 )
