@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"encoding/json"
@@ -10,19 +10,19 @@ import (
 	"regexp"
 	"strings"
 
-	curlParser "github.com/curl-k6/curl_parser"
-	"github.com/curl-k6/templates"
+	curlParser "github.com/curl-to-k6/curl_parser"
+	"github.com/curl-to-k6/templates"
 
-	helpers "github.com/curl-k6/helpers"
+	helpers "github.com/curl-to-k6/helpers"
 
 	gherkin "github.com/cucumber/gherkin/go"
 )
 
-func generatek6Code(fileName string) {
-	content, err := ioutil.ReadFile("./features/" + fileName)
+func generatek6Code(fileName string, directoryName string) {
+	content, err := ioutil.ReadFile(directoryName + "/" + fileName)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	reader := strings.NewReader(string(content))
@@ -50,7 +50,7 @@ func generatek6Code(fileName string) {
 
 		stringFile := templates.GenerateStarterCode(request.Url, strings.ToLower(request.Method), k6Script, helpers.GetBody(request.Body), string(headers), helpers.ProduceFormData(request.Files))
 
-		f, err := os.Create("./features/" + fileOutput)
+		f, err := os.Create(directoryName + "/" + fileOutput)
 
 		if err != nil {
 			fmt.Println(err)
@@ -70,28 +70,31 @@ func generatek6Code(fileName string) {
 			return
 		}
 
-		cmd := exec.Command("prettier", "--write", ".")
-		stdout, err := cmd.Output()
+		cmd := exec.Command("prettier", "--write", directoryName)
+		_, err = cmd.Output()
 
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
 
-		// Print the output
-		fmt.Println(string(stdout))
 	}
 }
 
-func main() {
+func Run(directoryName string) {
 
-	files, err := ioutil.ReadDir("./features")
+	files, err := ioutil.ReadDir(directoryName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, file := range files {
-		generatek6Code(file.Name())
+		if !strings.Contains(file.Name(), ".feature") {
+			continue
+		}
+
+		generatek6Code(file.Name(), directoryName)
+
 	}
 
 }

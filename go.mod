@@ -1,4 +1,4 @@
-module github.com/curl-k6
+module github.com/curl-to-k6
 
 go 1.18
 

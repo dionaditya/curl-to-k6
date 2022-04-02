@@ -24,13 +24,13 @@ export default function () {
   // our HTTP request, note that we are saving the response to res, which can be accessed later
 
   const fd = new FormData();
-  const file0 = open("/path/to/upload", "@image.ppt");
+  const file0 = open("/path/to/filename", "image.mp4");
+  fd.append("filename", http.file(file0, "image.mp4", "video/mp4"));
+  const file1 = open("/path/to/upload", "@image.ppt");
   fd.append(
     "upload",
-    http.file(file0, "@image.ppt", "application/vnd.ms-powerpoint")
+    http.file(file1, "@image.ppt", "application/vnd.ms-powerpoint")
   );
-  const file1 = open("/path/to/filename", "image.mp4");
-  fd.append("filename", http.file(file1, "image.mp4", "video/mp4"));
 
   const bodyRequest = fd.body();
 

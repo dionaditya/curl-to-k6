@@ -1,3 +1,4 @@
+// this code forked from https://github.com/killlowkey/parse-curl/blob/main/parse.go with some modification
 package curl_parser
 
 import (
