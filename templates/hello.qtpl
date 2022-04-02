@@ -1,0 +1,50 @@
+All text outside function templates is treated as comments,
+i.e. it is just ignored by quicktemplate compiler (`qtc`). It is for humans.
+
+Hello is a simple template function.
+{% func GenerateStarterCode(url string, method string, k6Options string, body string, headers string, files string) %}
+import http from 'k6/http';
+import { sleep, check } from 'k6';
+import { Counter } from 'k6/metrics';
+{% if len(files) > 0 %}
+import { FormData } from 'https://jslib.k6.io/formdata/0.0.2/index.js';
+{% endif %}
+
+// A simple counter for http requests
+
+export const requests = new Counter('http_reqs');
+
+// you can specify stages of your test (ramp up/down patterns) through the options object
+// target is the number of VUs you are aiming for
+
+export const options = {%v= k6Options %};
+
+export default function () {
+  // our HTTP request, note that we are saving the response to res, which can be accessed later
+
+  {% if len(files) > 0 %}
+    {%v= files %}
+  {% endif %}
+  
+
+  {% if len(body) > 0%} 
+    {% if len(files) > 0 %}
+      const bodyRequest = fd.body();
+    {% else %}
+      const bodyRequest = {%v= body %} 
+    {% endif %}
+  {% else %} 
+    const bodyRequest = undefined 
+  {% endif %}
+  const headers = {% if len(headers) > 0 %} { headers: {%v= headers %} } {% else %} undefined {% endif %}
+
+  const res = http.{%s method %}('{%s url %}', bodyRequest, headers);
+
+  sleep(1);
+
+  const checkRes = check(res, {
+    'status is 200': (r) => r.status === 200,
+    'response body': (r) => r.body.indexOf('Feel free to browse') !== -1,
+  });
+}
+{% endfunc %}
