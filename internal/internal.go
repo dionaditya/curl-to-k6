@@ -62,14 +62,15 @@ func generatek6Code(fileName string, directoryName string, outDir string) {
 			fmt.Println(err)
 			return
 		}
-		l, err := f.WriteString(stringFile)
+
+		_, err = f.WriteString(stringFile)
 
 		if err != nil {
 			fmt.Println(err)
 			f.Close()
 			return
 		}
-		fmt.Println(l, "bytes written successfully")
+		fmt.Println(fileOutput, "written successfully")
 		err = f.Close()
 		if err != nil {
 			fmt.Println(err)
@@ -99,10 +100,7 @@ func Run(sourceDir string, outDir string) {
 			continue
 		}
 
-		fmt.Println(file.Name())
-
 		generatek6Code(file.Name(), sourceDir, outDir)
-
 	}
 
 }
